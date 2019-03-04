@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+#import colorlog
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,13 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9ht$pydfa+ydno6mrgxxv86sp019oi2#z=9#)e_wdy7qorzxh2'
+SECRET_KEY = '9ht$pydfa+ydno6mrgxxv86sp019oi2#z=9#)e_wdy7qorzxh1'
+#SECRET_KEY = '9ht$pydfa+ydno6mrgxxv86sp019oi2#z=9#)e_wdy7qorzxh2'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['papyrus.ds-bq.local']
 
 # Application definition
 
@@ -73,6 +75,94 @@ TEMPLATES = [
 WSGI_APPLICATION = 'papyrus.wsgi.application'
 
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        # 'sqlformatter': {
+        #     '()': 'sqlformatter.SqlFormatter',
+        #     'format': '[%(levelname)-8s] %(asctime)s: %(message)s',
+        # },
+        'colored': {
+			'()': 'colorlog.ColoredFormatter',
+			'format': "%(log_color)s[%(levelname)-8s] %(reset)s%(white)s%(asctime)s%(reset)s: %(blue)s%(message)s",
+            'log_colors': {
+                    'DEBUG':    'cyan',
+                    'INFO':     'green',
+                    'WARNING':  'yellow',
+                    'ERROR':    'red',
+                    'CRITICAL': 'red,bg_white',
+            },
+		},
+        'verbose': {
+            'format': '[%(levelname)s] %(asctime)s %(module)s: %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'colored',
+        },
+        # 'sqlhandler': {
+        #     'level': 'DEBUG',
+        #     'class': 'logging.StreamHandler',
+        #     'formatter': 'sqlformatter'
+        # },
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'py.warnings': {
+            'handlers': ['console'],
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
+    }
+}
+
+# Caches
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -80,12 +170,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'papyrus',
-        'USERNAME': 'parallels',
+        'USERNAME': 'root',
         'PASSWORD': 'H13rr026',
         'HOST': 'localhost',
         'PORT': 5432,
     }
-
 }
 
 

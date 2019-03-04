@@ -4,8 +4,12 @@
     {{ title }} | Control de Impresoras
 {% endblock %}
 
+{% block extrahead %}
+    <link rel="icon" href="{{ STATIC_URL }}static/admin/img/favicon.ico" sizes="48x48" />
+{% endblock %}
+
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">CONTROL DE IMPRESORAS (beta)</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">CONTROL DE IMPRESORAS (alfa)</a></h1>
 <!--<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>-->
 {% endblock %}
 
