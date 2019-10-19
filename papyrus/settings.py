@@ -28,7 +28,7 @@ SECRET_KEY = '9ht$pydfa+ydno6mrgxxv86sp019oi2#z=9#)e_wdy7qorzxh1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.18.99.129','papyrus.ds-bq.local']
+ALLOWED_HOSTS = ['papyrus.ds-bq.local']
 
 # Application definition
 
@@ -170,14 +170,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'papyrus',
-        'USERNAME': 'root',
-        'PASSWORD': 'H13rr026',
-        'HOST': 'localhost',
-        'PORT': 5432,
-    },
-    'testing': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '_papyrus',
         'USERNAME': 'root',
         'PASSWORD': 'H13rr026',
         'HOST': 'localhost',
