@@ -5,10 +5,11 @@ from tools.admin.actions_custom import *
 
 # Define the admin class
 class AsignacionAdmin(admin.ModelAdmin):
-    list_display = ('fecha', 'impresora', 'estado', 'ubicacion', 'departamento', 'usuario')
+    list_display = ('fecha', 'impresora', 'ubicacion', 'departamento', 'usuario')
     actions = ['asignacion_change_impresora_estadoStock']
 
-    def impresora_estado(self, ):
+    # def impresora_estado(self, ):
+    #     pass
     def asignacion_change_impresora_estadoStock(modeladmin, request, queryset):
         for obj in queryset:
             print(obj.impresora.modelo)

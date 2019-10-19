@@ -28,7 +28,7 @@ SECRET_KEY = '9ht$pydfa+ydno6mrgxxv86sp019oi2#z=9#)e_wdy7qorzxh1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['papyrus.ds-bq.local']
+ALLOWED_HOSTS = ['papyrus.ds-bq.local', 'localhost']
 
 # Application definition
 
@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.core.inventory',
     'apps.inventario',
     'apps.consumibles',
+    'apps.refacciones',
 ]
 
 MIDDLEWARE = [
@@ -168,12 +170,10 @@ CACHES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'papyrus',
-        'USERNAME': 'root',
-        'PASSWORD': 'H13rr026',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': './db/my.cnf',
+        },
     }
 }
 
