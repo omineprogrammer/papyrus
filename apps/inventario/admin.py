@@ -8,7 +8,7 @@ class AsignacionAdmin(admin.ModelAdmin):
     list_display = ('fecha', 'impresora', 'estado', 'ubicacion', 'departamento', 'usuario')
     actions = ['asignacion_change_impresora_estadoStock']
 
-    def impresora_estado(self, ):
+    # def impresora_estado(self, ):
     def asignacion_change_impresora_estadoStock(modeladmin, request, queryset):
         for obj in queryset:
             print(obj.impresora.modelo)
@@ -31,7 +31,7 @@ admin.site.register(Departamento)
 admin.site.register(Usuario)
 admin.site.register(ModeloImpresora)
 admin.site.register(Impresora, ImpresoraAdmin)
-admin.site.register(Asignacion, AsignacionAdmin)
+admin.site.register(Asignacion)
 
 
 

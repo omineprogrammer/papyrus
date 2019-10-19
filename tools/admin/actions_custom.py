@@ -91,4 +91,5 @@ def asignacion_delete_selected(modeladmin, request, queryset):
     ], context)
 
 
-asignacion_delete_selected.short_description = gettext_lazy("Eliminar %(verbose_name_plural)s seleccionados y marcar Impresoras 'en Stock'")
+asignacion_delete_selected.short_description = gettext_lazy(
+    "Eliminar %(verbose_name_plural)s seleccionados y marcar Impresoras 'en Stock'")

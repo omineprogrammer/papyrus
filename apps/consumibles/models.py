@@ -1,5 +1,5 @@
 from django.db import models
-from apps.inventario.models import Impresora
+from apps.inventario.models import Impresora, ModeloImpresora
 from django.utils import timezone
 from tools.tools import getLastSubListRequesterTicket
 from datetime import datetime
@@ -34,8 +34,12 @@ class Consumible(models.Model):
     codigo_proveedor = models.CharField(max_length=64, blank=True)
     cantidad_existente = models.PositiveIntegerField(default=0)
     color = models.ForeignKey(Color, on_delete=models.PROTECT)
+    compatibilidad_con = models.ManyToManyField(ModeloImpresora)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.PROTECT)
     descripcion = models.TextField(max_length=256, blank=True, verbose_name='Notaciones')
+
+    def compatible_con(self):
+        return ", ".join([c.__str__() for c in self.compatibilidad_con.all()])
 
     def save(self, *args, **kwargs):
         self.codigo = self.codigo.upper()
@@ -51,8 +55,8 @@ class Movimiento(models.Model):
     tipos_movimiento = (
         (0, 'ingreso'),
         (1, 'salida'),
-        # (2, 'ingreso de cuadre'),
-        # (3, 'salida de cuadre'),
+        (2, 'ingreso de cuadre'),
+        (3, 'salida de cuadre'),
     )
     id_solicitudes = getLastSubListRequesterTicket()
 
@@ -76,7 +80,16 @@ class Movimiento(models.Model):
 
         # CHECK: cantidad de consumibles en stock antes de cada operacion
         if self.consumible:
-            _consumible = Consumible.objects.filter(id=self.consumible.id)[0]
+            _consumible = Consumible.objects.filter(id=self.consumible.id).first()
+            if not self.impresora in list(_consumible.compatibilidad_con.all()):
+                raise ValidationError({
+                    'impresora': ValidationError(
+                        'Consumible no compatible con impresora {}'.format(self.impresora))
+                })
+
+        # CHECK: si el consumible no es compatible con la impresora
+        if self.consumible:
+            _consumible = Consumible.objects.filter(id=self.consumible.id).first()
             if not _consumible.cantidad_existente + _cantidad >= 0:
                 raise ValidationError({'cantidad': ValidationError('Cantidad en stock no es suficiente para la operacion')})
 
@@ -86,10 +99,12 @@ class Movimiento(models.Model):
             impresora_estado = self.impresora.estado
             if impresora_estado == 0:
                 raise ValidationError({'impresora': ValidationError('Impresora no esta asignada')})
-            elif impresora_estado == 3:
+            elif impresora_estado == 2:
                 raise ValidationError({'impresora': ValidationError('Impresora esta averiada')})
-            else:
-                raise ValidationError({'impresora': ValidationError('Si se puede asignar a esta impresora consumible')})
+            elif impresora_estado == 3:
+                raise ValidationError({'impresora': ValidationError('Impresora esta en reparacion')})
+            elif impresora_estado == 4:
+                raise ValidationError({'impresora': ValidationError('Impresora esta dada de baja')})
         # sino se especifico impresora validar que no sea un movimiento de salida, de no ser asi, se lanza excepcion
         elif self.tipo_movimiento % 2 != 0:
             raise ValidationError({'impresora': ValidationError('Si es un movimiento "' + self.tipos_movimiento[self.tipo_movimiento][1] + '" se debe especificar una impresora')})
